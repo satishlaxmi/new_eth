@@ -40,17 +40,26 @@ class AuthController extends Controller
             'c_password' => 'required|same:password'
         ]);
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 422); 
+            return response()->json([
+                'status'=>422,
+                'messgae'=>"something went wrong",
+                'error' => $validator->errors()], 422); 
         }
         $user = User::create(request(['name', 'email', 'password']));
         if($user){
             $tokenResult = $user->createToken('Personal Access Token');
             $token = $tokenResult->plainTextToken;
-            $rol = $user->assignRole('user');
+            $rol = $user->assignRole('company');
             return response()->json([
+            'status'=>201,
             'message' => 'Successfully created user!',
-            'accessToken'=> $token,
-            'role'=> $rol,
+              'data'=>[
+                'accessToken'=> $token,
+                'role'=> [
+                    "company"
+                ],
+              ] 
+            
             ],201);
         }
         else{
@@ -96,10 +105,12 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+    
         $request->user()->tokens()->delete();
         return response()->json([
+        'status'=> 200,
         'message' => 'Successfully logged out'
-        ],201);
+        ],200);
     
     }
 

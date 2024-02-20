@@ -16,6 +16,10 @@ use App\Http\Controllers\backend\admin\AdminController;
 //use App\Http\Controllers\admin\backend\AdminproductController;
 use App\Http\Controllers\TestingController;
 use App\Http\Controllers\backend\company\UserBackendController;
+use App\Http\Controllers\airtabel\EmojiairtableController;
+use App\Http\Controllers\airtabel\ColourairtabelController;
+
+
 
 
 
@@ -48,14 +52,6 @@ Route::group(['prefix' => 'auth'], function () {
 
 });
         
-
-/* Route::get('forget-password', [ForgotPasswordController::class, 'showForgetPasswordForm'])->name('forget.password.get');
-Route::post('forget-password', [ForgotPasswordController::class, 'submitForgetPasswordForm'])->name('forget.password.post'); 
-Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('reset.password.get');
-Route::post('reset-password', [ForgotPasswordController::class, 'submitResetPasswordForm'])->name('reset.password.post'); */
-
-
-
 Route::group(['prefix' => 'sadm'], function () {
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::group(['middleware' => ['role:super admin']], function () {
@@ -75,7 +71,7 @@ Route::group(['prefix' => 'sadm'], function () {
              Route::get('user/delete', [AdminController::class, 'getDeleteUser']);
              Route::get('user/details', [AdminController::class, 'getSingleUserDetails']);
              Route::put('user/edit', [AdminController::class, 'getEditSingleUserDetails']);
-             Route::put('product/starproducts', [AdminController::class, 'editStarProduct']);
+             Route::put('product/starproducts',[AdminController::class, 'editStarProduct']);
         });
     
     });
@@ -83,17 +79,15 @@ Route::group(['prefix' => 'sadm'], function () {
 
 });
 
-
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::group(['middleware' => ['role:company']], function () {
-        Route::get('cart',[UserBackendController::class,'getCart'])->name('user_cart_inforamtion');
+        Route::get('cart/{id}',[UserBackendController::class,'getCart'])->name('user_cart_inforamtion');
+        Route::post('cart/update',[UserBackendController::class,'createCart'])->name('update_user_cart_inforamtion');
+        Route::put('cart/create/address',[UserBackendController::class,'createCartAddress'])->name('update_user_cart_address');
 
        
     });
 });
-
-
-
 
 //product
 Route::get('saveallproduct',[ProductController::class,"saveAllproduct"])->name('get_all_product_from_air_table_and_save_in_the_database');
@@ -107,12 +101,8 @@ Route::get('product/can',[ProductController::class, 'getCanProduct']);
 Route::get('product/recent',[ProductController::class, 'getRecentProduct'])->name('get_recent_product');
 Route::get('airtabel/product',[ProductController::class, 'showAllCollectionAirTabel']);
 
-
-
-
 //varaint 
 Route::post('saveallvaraint',[VaraintController::class,"saveAllVaraintFromAirTabel"]);
-
 
 //collection
 Route::get('showallcollection',[AllCollectionController::class,"showAllCollection"])->name('show_all_collection_from_air_table');
@@ -127,8 +117,8 @@ Route::get('catogey',[AllCatogeryController::class,"showallCatogery"])->name('sh
 Route::get('airtabel/catgeory', [AllCatogeryController::class,"showAllCatogeryAirTabel"])->name("air_tabel_catogery");
 
 //Emoji
-Route::get('saveemoji',[EmojiController::class,"saveAllEmoji"])->name('save_emoji_from_air_table');
-Route::get('emoji',[EmojiController::class,"showallCatogery"])->name('show_emoji_ourtable');
+/* Route::get('saveemoji',[EmojiController::class,"saveAllEmoji"])->name('save_emoji_from_air_table');
+Route::get('emoji',[EmojiController::class,"showallCatogery"])->name('show_emoji_ourtable'); */
 
 //
 
@@ -138,6 +128,17 @@ Route::get('emoji',[EmojiController::class,"showallCatogery"])->name('show_emoji
 Route::get('testget',[TestingController::class,"gettestController"])->name("testing-controler-get");
 Route::post('testpost',[TestingController::class,"posttestController"])->name("testing-controler-post");
 
+
+
+//AIRTABE API
+
+//EMOJI
+Route::get('saveemoji',[EmojiairtableController::class,"saveEmoji"]);
+
+
+
+//COLOURS
+Route::get('savecolours',[ColourairtabelController::class,"saveColours"]);
 
 
 

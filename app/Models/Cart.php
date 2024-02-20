@@ -7,7 +7,7 @@ use DB;
 
 class Cart extends Model
 {
-    protected $fillable=['user_id','product_id','order_id','quantity','amount','price','status','ord_expected_date','order_note','additional_services'	];
+    protected $fillable=['user_id','product_id','order_id','quantity','products_details','amount','price','status','ord_expected_date','order_note','additional_services','cart_id','address'	];
     
     // public function product(){
     //     return $this->hasOne('App\Models\Product','id','product_id');
@@ -33,17 +33,19 @@ class Cart extends Model
     public static function getCartInfo($userId)
     {
         $userCart = Cart::where('user_id', $userId)->where('cart_completed', '0')->get();
-        $cartInfo = [];
-        $productData=[];
-        foreach ($userCart as $cartItem) {
-            $product_id = $cartItem->product_id;
-            $productData[] = self::product($product_id); // Use self:: to refer to the static metho  
+         if(!empty($userCart)){
+            return  $userCart; 
+        }else{
+             return  $userCart; 
         }
-        return  $cartInfo = [
-            'cartId'=>$cartItem->card_id,
-            'items'=>$productData
-        ];
+        
     }
+
+    public static function saveCartData($car_data){
+        $shipment = new Cart();
+        
+        
+    } 
     
     
     

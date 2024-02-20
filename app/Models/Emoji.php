@@ -8,24 +8,21 @@ use Illuminate\Database\Eloquent\Model;
 class Emoji extends Model
 {
     use HasFactory;
-    protected $table = "emojirating";
+    protected $table = "emoji";
     protected $fillable = [
-        'id-emoji-air',
-        'Emoji_Rating',
-        'Caption',
-        'Collection',
-        'Notes',
-        'SDGs',
-        'SDG_from_SDGs',
-        'ESG',
-        'ESG_Impact',
-        'Products',
-        'Count_Active_Products_CA_US',
-        'Count_Active_Products_CA',
-        'Goal_Count_Active_Products_On_CA_Website',
-        'Count_Active_Products_US',
-        'Goal_Count_Active_Products_On_US_Website',
-        'Count_Deficit_Active_Products_CA',
-        'Count_Deficit_Active_Products_US',
+        'airtabel_id',
+        'emoji_rating',
+        'caption',
+        'collection',
+        'notes',
+        'sdgs',
+        'sdg_from_sdgs',
+        'esg',
+        'esg_impact',
+        'products',
+        'count_Active_Products_CA_US',
+        'count_Active_Products_CA',
+        'count_Active_Products_US',
+        'parent_products',
     ];
 }

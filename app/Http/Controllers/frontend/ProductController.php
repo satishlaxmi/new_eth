@@ -9,18 +9,22 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\AllProduct;
 use DB;
+use Config;
 use Illuminate\Support\Facades\Storage;
 class ProductController extends Controller
 {
 
+public $AIR_TABLE_KEY ;
+public $AIR_TABLE_BASE ;
 
- public function __construct()
+public function __construct()
 {
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: *');
-    header('Access-Control-Allow-Headers: *');  
+    header('Access-Control-Allow-Headers: *');
+    $this->AIR_TABLE_KEY = Config::get('myconfig.airtabel.airtabel_key');
+    $this->AIR_TABLE_BASE = Config::get('myconfig.airtabel.airtabel_base');
 }
-
     //This api get the all the products stored in the our database Allproduct  
     public function getTestProduct(Request $request){
         // $data = AllProduct::limit(10)->get();
@@ -42,42 +46,40 @@ class ProductController extends Controller
 
 
 
-public function getProduct(Request $request)
-{
-    $query = AllProduct::query();
+    public function getProduct(Request $request)
+    {
+        $query = AllProduct::query();
 
-    $searchParams = [
-        'min_price' => '>=',
-        'max_price' => '<=',
-        'product_type' => '=',
-        'colours' => '=',
-        'material_made' => '=',
-        'customization' => '=',
-    ];
-    foreach ($searchParams as $param => $operator) {
-        if ($request->filled($param)) {
-            $query->where($param, $operator, $request->input($param));
+        $searchParams = [
+            'min_price' => '>=',
+            'max_price' => '<=',
+            'product_type' => '=',
+            'colours' => '=',
+            'material_made' => '=',
+            'customization' => '=',
+        ];
+        foreach ($searchParams as $param => $operator) {
+            if ($request->filled($param)) {
+                $query->where($param, $operator, $request->input($param));
+            }
+        }
+
+        // Paginate the results
+        $data = $query->paginate(10);
+
+        if ($data->isEmpty()) {
+            return response()->json([
+                "status" => 204,
+                "message" => "There is no product matching the search criteria",
+            ], 204);
+        } else {
+            return response()->json([
+                "status" => 200,
+                "message" => "Products matching the search criteria",
+                "data" => $data,
+            ], 200);
         }
     }
-
-    // Paginate the results
-    $data = $query->paginate(10);
-
-    if ($data->isEmpty()) {
-        return response()->json([
-            "status" => 204,
-            "message" => "There is no product matching the search criteria",
-        ], 204);
-    } else {
-        return response()->json([
-            "status" => 200,
-            "message" => "Products matching the search criteria",
-            "data" => $data,
-        ], 200);
-    }
-}
-
-    
 
 
     /*   This Api get information of the single product allong with  the collection ,varaint and catogert attached to it .singleproductModal function here is from the modal Allproduct
@@ -200,10 +202,11 @@ public function getAllproductDataFromAirtable()
         'verify'=>false
     ]);
     $headers = [
-        'Authorization' => 'Bearer patpWQxZRSrleolVd.c5ee9f3cc1a11f09fe08d064eaa20852729de5c4e1128548c994239f7b761557',
+        'Authorization' => 'Bearer '.$this->AIR_TABLE_KEY,
         'Content-Type' => 'application/json', // Add this line if needed
     ];
-    $response = $client->request('GET', 'https://api.airtable.com/v0/appBHen7nPeomNzbR/tbl7uEFkgGSy9vkLg', [
+    $response = $client->request('GET', 'https://api.airtable.com/v0/'.$this->AIR_TABLE_BASE.'/tblCRXMmn9gWaIban'
+    , [
         'headers' => $headers,
     ]);
     $dataAll = json_decode($response->getBody()->getContents()); // Decode the JSON content
