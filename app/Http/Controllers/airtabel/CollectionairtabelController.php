@@ -100,7 +100,7 @@ class CollectionairtabelController extends Controller
         if ($dataR) {
             return [
                 'dataR' => $dataR,
-                'dataOffset' => $dataOffset,
+                'dataOffset' => $dataOffse
             ];
         } else {
             return response()->json([
