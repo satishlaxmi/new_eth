@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('colours', function (Blueprint $table) {
+        Schema::create('colour', function (Blueprint $table) {
             $table->id();
             $table->string('airtabel_id')->unique();
             $table->text('colour_categories')->nullable();

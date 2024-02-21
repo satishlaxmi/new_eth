@@ -19,10 +19,10 @@ class UserBackendController extends Controller
 {
     public function getCart(Request $request){
         // Authenticate the user using Sanctum
-        $user = Auth::guard('sanctum')->user();
+       /*  $user = Auth::guard('sanctum')->user(); */
         // Check if the authenticated user matches the requested user ID
-        if ($user && $user->id == $request->id) {
-            $userCart = Cart::getCartInfo($user->id);
+       /*  if ($user && $user->id == $request->id) { */
+            $userCart = Cart::getCartInfo($request->id);
 
             if ($userCart !== false) {
                 return response()->json([
@@ -30,7 +30,7 @@ class UserBackendController extends Controller
                     'message' => 'current user cart',
                     'data' => $userCart,
                 ], 200);
-            }
+           /*  } */
         }
 
         // If authentication fails or cart retrieval fails, return an error response

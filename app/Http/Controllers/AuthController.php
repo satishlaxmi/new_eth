@@ -95,6 +95,8 @@ class AuthController extends Controller
             'status'=>200,
             'data'=>[ 'accessToken' =>'Bearer'." ".$token,
             'role'=>$roles,
+            'id'=>$user->id
+            
             ]
         ]);
     }

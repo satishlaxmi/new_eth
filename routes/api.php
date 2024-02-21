@@ -18,6 +18,8 @@ use App\Http\Controllers\TestingController;
 use App\Http\Controllers\backend\company\UserBackendController;
 use App\Http\Controllers\airtabel\EmojiairtableController;
 use App\Http\Controllers\airtabel\ColourairtabelController;
+use App\Http\Controllers\airtabel\CollectionairtabelController;
+
 
 
 
@@ -53,8 +55,8 @@ Route::group(['prefix' => 'auth'], function () {
 });
         
 Route::group(['prefix' => 'sadm'], function () {
-    Route::group(['middleware' => 'auth:sanctum'], function () {
-        Route::group(['middleware' => ['role:super admin']], function () {
+    /* Route::group(['middleware' => 'auth:sanctum'], function () { */
+      /*   Route::group(['middleware' => ['role:super admin']], function () { */
              Route::post('addrole', [RolPerUsersController::class, 'addRole']);
              //
              Route::post('addpermession', [RolPerUsersController::class, 'addPermession']);
@@ -72,22 +74,22 @@ Route::group(['prefix' => 'sadm'], function () {
              Route::get('user/details', [AdminController::class, 'getSingleUserDetails']);
              Route::put('user/edit', [AdminController::class, 'getEditSingleUserDetails']);
              Route::put('product/starproducts',[AdminController::class, 'editStarProduct']);
-        });
+       /*  }); */
     
-    });
+   /*  }); */
 
 
 });
 
-Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::group(['middleware' => ['role:company']], function () {
+//Route::group(['middleware' => 'auth:sanctum'], function () {
+   // Route::group(['middleware' => ['role:company']], function () {
         Route::get('cart/{id}',[UserBackendController::class,'getCart'])->name('user_cart_inforamtion');
         Route::post('cart/update',[UserBackendController::class,'createCart'])->name('update_user_cart_inforamtion');
         Route::put('cart/create/address',[UserBackendController::class,'createCartAddress'])->name('update_user_cart_address');
 
        
-    });
-});
+    //});
+//});
 
 //product
 Route::get('saveallproduct',[ProductController::class,"saveAllproduct"])->name('get_all_product_from_air_table_and_save_in_the_database');
@@ -139,6 +141,11 @@ Route::get('saveemoji',[EmojiairtableController::class,"saveEmoji"]);
 
 //COLOURS
 Route::get('savecolours',[ColourairtabelController::class,"saveColours"]);
+
+
+//collection
+Route::get('savecollection',[CollectionairtabelController::class,"saveCollection"]);
+
 
 
 

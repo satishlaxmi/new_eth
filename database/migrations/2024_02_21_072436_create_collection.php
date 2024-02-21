@@ -19,6 +19,7 @@ return new class extends Migration
             $table->json('catogery')->nullable();
             $table->json('products')->nullable();
             $table->integer('good')->nullable();
+            $table->integer('unionized')->nullable();
             $table->integer('better')->nullable();
             $table->integer('best')->nullable();
             $table->integer('women_owned')->nullable();
