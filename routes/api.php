@@ -16,9 +16,13 @@ use App\Http\Controllers\backend\admin\AdminController;
 //use App\Http\Controllers\admin\backend\AdminproductController;
 use App\Http\Controllers\TestingController;
 use App\Http\Controllers\backend\company\UserBackendController;
+//air tabel controller
 use App\Http\Controllers\airtabel\EmojiairtableController;
 use App\Http\Controllers\airtabel\ColourairtabelController;
 use App\Http\Controllers\airtabel\CollectionairtabelController;
+use App\Http\Controllers\airtabel\ProductairtabelController;
+
+
 
 
 
@@ -145,6 +149,12 @@ Route::get('savecolours',[ColourairtabelController::class,"saveColours"]);
 
 //collection
 Route::get('savecollection',[CollectionairtabelController::class,"saveCollection"]);
+
+//product
+Route::get('saveproduct',[ProductairtabelController::class,"saveProduct"]);
+
+
+
 
 
 
