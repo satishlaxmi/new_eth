@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Colour;
+
+use App\Models\Test;
+
 use App\Models\AllProduct;
 use DB;
 use Config;
@@ -28,7 +32,27 @@ public function __construct()
     //This api get the all the products stored in the our database Allproduct  
     public function getTestProduct(Request $request){
         // $data = AllProduct::limit(10)->get();
-        $data = AllProduct::select('id', 'image', 'unit_price', 'product_title','colours')->paginate(10);
+        $data = Test::select('id', 'image', 'unit_price', 'product_title','colours')->where('starproduct',1)->paginate(10);
+        foreach ($data as $product) {
+            $colourArray = json_decode($product->colours);
+            $coloursWithImage = [];
+             if($colourArray){
+                foreach ($colourArray as $col) {
+                    $colorImage = Colour::where('colour_categories', $col)->value('image');
+                    // Check if $image is not null before assigning it to the array
+                    if ($colorImage !== null) {
+                        $coloursWithImage[$col] = $colorImage;
+                    } else {
+                        // Handle the case where no record is found for the color category
+                        $coloursWithImage[$col] = null;
+                    }
+                }
+                // Update the product's colours with images
+                $product->colours = $coloursWithImage;
+               
+             }
+           
+        }
         
         if ($data->isEmpty()) {
             return response()->json([
@@ -48,8 +72,13 @@ public function __construct()
 
     public function getProduct(Request $request)
     {
-        $query = AllProduct::query();
 
+        if($request->pageSize){
+            $pageSize =$request->pageSize;
+        }else{
+            $pageSize = 10;
+        };
+        $query = Test::query();
         $searchParams = [
             'min_price' => '>=',
             'max_price' => '<=',
@@ -57,36 +86,93 @@ public function __construct()
             'colours' => '=',
             'material_made' => '=',
             'customization' => '=',
+            'available_in_canada'=>'=',
+            'available_in_usa'=>'=',
+            'search_title'=>'=',  
         ];
+        
         foreach ($searchParams as $param => $operator) {
             if ($request->filled($param)) {
-                $query->where($param, $operator, $request->input($param));
+                // Modify the condition for 'product_title' to use 'LIKE' for partial search
+                if ($param === 'search_title') {
+                    $query->where('product_title', 'LIKE', '%' . $request->input($param) . '%');
+                } else {
+                    $query->where($param, $operator, $request->input($param));
+                }
             }
         }
 
+        $orderByParams = [
+            'created_at_asc' => '=',
+            'created_at_desc' => '=',
+            'product_title_asc' => '=',
+            'product_title_desc' => '=',
+        ];
+        
+        foreach ($orderByParams as $param => $operator) { // Fix here, use $orderByParams instead of $searchParams
+            if ($request->filled($param)) {
+                // Modify the condition for 'product_title' to use 'LIKE' for partial search
+                if ($param === 'product_title_asc' || $param === 'product_title_desc') {
+                    $query->orderBy('product_title', ($param === 'product_title_asc') ? 'asc' : 'desc');
+                } elseif ($param === 'created_at_asc' || $param === 'created_at_desc') {
+                    $query->orderBy('created_at', ($param === 'created_at_asc') ? 'asc' : 'desc');
+                } else {
+                    // Handle other cases if needed
+                }
+            }
+            
+        }
+        
+        // Check if orderBy parameter is provided
+       
         // Paginate the results
-        $data = $query->paginate(10);
-
+        $data = $query->paginate($pageSize);
+    
         if ($data->isEmpty()) {
             return response()->json([
                 "status" => 204,
                 "message" => "There is no product matching the search criteria",
             ], 204);
         } else {
+            // Fetch color images for each product
+            foreach ($data as $product) {
+                $colourArray = json_decode($product->colours);
+                $coloursWithImage = [];
+                 if($colourArray){
+                    foreach ($colourArray as $col) {
+                        $colorImage = Colour::where('colour_categories', $col)->value('image');
+                        // Check if $image is not null before assigning it to the array
+                        if ($colorImage !== null) {
+                            $coloursWithImage[$col] = $colorImage;
+                        } else {
+                            // Handle the case where no record is found for the color category
+                            $coloursWithImage[$col] = null;
+                        }
+                    }
+                    // Update the product's colours with images
+                    $product->colours = $coloursWithImage;
+                   
+                 }
+               
+            }
+    
             return response()->json([
                 "status" => 200,
                 "message" => "Products matching the search criteria",
+                'country'=>$request->available_in_canada?"Canada":"USA",
                 "data" => $data,
             ], 200);
         }
     }
+    
 
 
     /*   This Api get information of the single product allong with  the collection ,varaint and catogert attached to it .singleproductModal function here is from the modal Allproduct
   */
     public function getSingleProduct(Request $request,$id)
     {
-        $data = AllProduct::singleproductModal($id);
+       $data = AllProduct::singleproductModal($id);
+
        
        $dimension = $data->original["product_data"]->product_dimensions;
          preg_match_all('/\b(?:S|M|L|XL|2XL)\b/', $dimension, $matches);
@@ -144,18 +230,39 @@ public function __construct()
     public static function  getUsaProduct(Request $request)
     {
         $data = AllProduct::usaProduct();
-        if($data){
-            return response()->json([
-                'status'=>200,
-                'message'=>"These are  usa product inforamtion",
-                "data"=>$data
-            ],200);
-        }else{
-            return response()->json([
-                'message'=>"No data ",
-                "data"=>$data
-            ],404);
 
+
+          if ($data->isEmpty()) {
+            return response()->json([
+                "status" => 204,
+                "message" => "There is no product matching the search criteria",
+            ], 204);
+        } else {
+            // Fetch color images for each product
+            foreach ($data as $product) {
+                $colourArray = json_decode($product->colours);
+                $coloursWithImage = [];
+    
+                foreach ($colourArray as $col) {
+                    $image = Colour::where('colour_categories', $col)->value('image');
+                    // Check if $image is not null before assigning it to the array
+                    if ($image !== null) {
+                        $coloursWithImage[$col] = $image;
+                    } else {
+                        // Handle the case where no record is found for the color category
+                        $coloursWithImage[$col] = null;
+                    }
+                }
+    
+                // Update the product's colours with images
+                $product->colours = $coloursWithImage;
+            }
+    
+            return response()->json([
+                "status" => 200,
+                "message" => "Products matching the search criteria",
+                "data" => $data,
+            ], 200);
         }
     }
     public static function  getCanProduct(Request $request)
@@ -177,11 +284,23 @@ public function __construct()
     }
     
     public function getRecentProduct(Request $request){
-        $productRecent = Allproduct::RecentAddedProduct();
+           
+        $pageSize = isset($request->pageSize)? $request->pageSize:10;
+        $country =$request->country;
+        if(!$country){
+            return response()->json([
+                "status"=>"219",
+                "message"=>"Please select the Country ",
+                "data"=>$productRecent
+            ]);
+            
+        }
+        $productRecent = Allproduct::RecentAddedProduct($pageSize,$country);
         return response()->json([
             "status"=>"200",
+            'country'=>$country,
             "message"=>"All recent Product",
-            "Data"=>$productRecent
+            "data"=>$productRecent
         ]);
 
     }

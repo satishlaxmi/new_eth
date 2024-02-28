@@ -2,6 +2,8 @@
 
 namespace App\Models;
 use App\Models\AllProduct;
+use App\Models\Test;
+
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
@@ -22,7 +24,7 @@ class ProductReview extends Model
 
     public function product()
     {
-        return $this->belongsTo(AllProducts::class, 'product_id', 'id');
+        return $this->belongsTo(Test::class, 'product_id', 'id');
     }
 
 

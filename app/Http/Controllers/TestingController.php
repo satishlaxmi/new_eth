@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
 use Config; // Use the correct case for Config
+
 class TestingController extends Controller
 {
     public $AIR_TABLE_KEY;
@@ -23,5 +24,9 @@ class TestingController extends Controller
     {
         $name = test("satish");
         echo $this->AIR_TABLE_KEY; // Correct usage of $this->AIR_TABLE_KEY
+
+        $data = DB::table('testallproducts')->get();
+        return  $data ;
+
     }
 }

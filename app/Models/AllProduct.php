@@ -5,6 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Product;
+use App\Models\Colour;
+
+use App\Models\Test;
+use App\Models\Emoji;
+
+
+
 use App\Models\Varaiant;
 use App\Models\AllCollection;
 use App\Models\Cart;
@@ -126,22 +133,56 @@ class AllProduct extends Model
 
     //This function take id of the product and returns the all the information corespond to that product 
     public static function singleproductModal($id){
-       $product = AllProduct::find($id);
+      // $product = AllProduct::find($id);
+       $product = Test::find($id);
+       $colourArray = json_decode($product->colours);
+
+    
+       $colourArray = json_decode($product->colours);
+       $emojiArray = json_decode($product->emoji_ratings);
+
+        $coloursWithImage = [];
+        $emojiWithImage = [];
+
+
+        foreach ($colourArray as $col) {
+            $image = Colour::where('colour_categories', $col)->value('image');
+            // Check if $image is not null before assigning it to the array
+            if ($image !== null) {
+                $coloursWithImage[$col] = $image;
+            } else {
+                // Handle the case where no record is found for the color category
+                $coloursWithImage[$col] = null;
+            }
+        };
+         //Emoji::where('airtabel_id', 'rec66lsvJ6kksVBZF')->value('emoji_rating');
+         foreach ($emojiArray as $col) {
+            $emoji = Emoji::where('airtabel_id', $col)->value('emoji_rating');
+            // Check if $image is not null before assigning it to the array
+            if ($emoji !== null) {
+                $emojiWithImage[$col] = $emoji;
+            } else {
+                // Handle the case where no record is found for the color category
+                $emojiWithImage[$col] = null;
+            }
+        }; 
+       $product->colours = $coloursWithImage;
+       $product->emoji_ratings = $emoji;
         if ($product) {
             $reviews = $product->review;
-            $starCounts = $reviews->groupBy('rate')
+           /*  $starCounts = $reviews->groupBy('rate')
                 ->mapWithKeys(function ($reviews, $star) {
                     return [$star => $reviews->count()];
-                });
+                });  */
             //returning all the fields for now
             return response()->json([
                 'product_data' => $product,
                 'Varaint' => $product->variants,
                 'collection' => $product->collection,
-                'review' => [
+                /* 'review' => [
                     'data' => $reviews,
                     'star' => $starCounts->toArray(),
-                ]
+                ] */
             ]);
             //if return particualr fields the below make sure u selct all the required fields
             /* $productName = $product->product_title;
@@ -169,20 +210,20 @@ class AllProduct extends Model
         return $productCout;
     }
     //this function get recent added product
-    public  static function RecentAddedProduct(){
-        $recentProduct = AllProduct::orderBy('created_at', 'desc')->limit(9)->get();
+    public  static function RecentAddedProduct($pageSize ,$country){
+        $recentProduct = Test::where($country,1)->orderBy('created_at', 'desc')->limit($pageSize)->get();
         return $recentProduct ;
 
     }
 
     //this function get product of the usa origin
     public static function usaProduct(){
-        $recentProduct = AllProduct::where('available_in_usa', '1')->paginate(10);
+        $recentProduct = Test::where('available_in_usa', '1')->paginate(10);
         return $recentProduct ;
     }
     //this function get product of the can origin
-    public static function canProduct(){
-        $recentProduct = AllProduct::where('available_in_canada', '1')->paginate(10);
+    public static function canProduct($pageNo){
+        $recentProduct = Test::where('available_in_canada', '1')->paginate(10);
         return $recentProduct ;
     }
 

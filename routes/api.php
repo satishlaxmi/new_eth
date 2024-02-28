@@ -99,7 +99,7 @@ Route::group(['prefix' => 'sadm'], function () {
 Route::get('saveallproduct',[ProductController::class,"saveAllproduct"])->name('get_all_product_from_air_table_and_save_in_the_database');
 Route::get('productdataairtable',[ProductController::class,"api_getAllproductDataFromAirtable"])->name('get_all_product_from_air_table');
 Route::get('products',[ProductController::class,"getProduct"])->name('get_all_product_ourdatabase');
-Route::get('testproducts',[ProductController::class,"gettestProduct"]);
+Route::get('starproducts',[ProductController::class,"gettestProduct"]);
 Route::get('products/{id}', [ProductController::class, 'getSingleProduct'])->name('get_single_product_ourdatabase');
 Route::get('product/starproducts', [ProductController::class, 'getStarProduct'])->name('get_star_product_ourdatabase');
 Route::get('product/usa',[ProductController::class, 'getUsaProduct']);

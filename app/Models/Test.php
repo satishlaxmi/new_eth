@@ -21,6 +21,7 @@ class Test extends Model
     protected $fillable = [
         'id',
         'id_products_airtable',
+        'link_to_images_us',
         'createdTime',
         'column_5_letter',
         'shopify_variant_image_matching_status',
@@ -100,5 +101,22 @@ class Test extends Model
         'prompt_to_sync_data_to_shopify_ca',
         'es_base_product_title_without_gender_or_sample',
         'all_images_linked_in_images_ca_table',
+        'certBy',
+        'product_description',
+        'product_dimensions',
+        'swift_tag',    
+        'imprint_location',
+        'brand',
+        "product_type",
+        'gender',
+        'collection',
+        'country_origin',
+        'minium_qunatity',
+        'image'
+        
+        
+
+
+
     ];
 }
