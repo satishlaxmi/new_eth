@@ -132,18 +132,17 @@ class AllProduct extends Model
     }
 
     //This function take id of the product and returns the all the information corespond to that product 
-    public static function singleproductModal($id){
+    public static function singleproductModal($id,$countryName){
       // $product = AllProduct::find($id);
        $product = Test::find($id);
-       $colourArray = json_decode($product->colours);
-
-    
-       $colourArray = json_decode($product->colours);
+      
+       $country = $countryName == "canada"?"canada":"us";
+       $colourArrayOld = json_decode($product->colours);
+       $colourArray = json_decode($colourArrayOld->$country);
        $emojiArray = json_decode($product->emoji_ratings);
 
         $coloursWithImage = [];
         $emojiWithImage = [];
-
 
         foreach ($colourArray as $col) {
             $image = Colour::where('colour_categories', $col)->value('image');

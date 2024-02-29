@@ -15,6 +15,7 @@ class AllCatogery extends Model
         'catogery_id_air1',
         'Level_2_Collection',
         'Level_3_Collection',
+        'product_linked'
     ];
 
 

@@ -27,7 +27,16 @@ class AllCollectionController extends Controller
 }
 
 public function getCollection(Request $request){
-    $data = AllCollection::getAllCollection();
+    $catogeryNmae = isset($request->cat)?$request->cat:null;
+    if(!$catogeryNmae){
+        return response()->json([
+            "status"=>400,
+            "message"=>"send catogery name ",
+       ],400);
+
+    }
+    $data = AllCollection::getAllCollection($catogeryNmae);
+    
         if($data){
             return response()->json([
                 "message"=>"This is all products data with all the cooumn",

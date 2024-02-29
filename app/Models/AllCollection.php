@@ -56,6 +56,7 @@ class AllCollection extends Model
     }
 
     public static function getcollectionproducts($collectionName){
+
         $collection = AllCollection::find($collectionName);
         return [
             'data'=>$collection->product,
@@ -63,9 +64,10 @@ class AllCollection extends Model
         ];
 
     }
-    public static function getAllCollection(){
-        $collection = AllCollection::paginate(5);
-        return  $collection;
+
+    public static function getAllCollection($catogeryNmae){
+        $collection = Collection::where('catogery', 'like', '%' . $catogeryNmae . '%')->get('parent_products');
+        return  json_encode($collection);
 
 
     }

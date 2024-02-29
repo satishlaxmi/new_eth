@@ -34,7 +34,8 @@ public function __construct()
         // $data = AllProduct::limit(10)->get();
         $data = Test::select('id', 'image', 'unit_price', 'product_title','colours')->where('starproduct',1)->paginate(10);
         foreach ($data as $product) {
-            $colourArray = json_decode($product->colours);
+            $colourArrayOld = json_decode($product->colours);
+            $colourArray = json_decode($colourArrayOld->canada);
             $coloursWithImage = [];
              if($colourArray){
                 foreach ($colourArray as $col) {
@@ -79,6 +80,7 @@ public function __construct()
             $pageSize = 10;
         };
         $query = Test::query();
+        $query->whereNotNull('image');
         $searchParams = [
             'min_price' => '>=',
             'max_price' => '<=',
@@ -136,7 +138,8 @@ public function __construct()
         } else {
             // Fetch color images for each product
             foreach ($data as $product) {
-                $colourArray = json_decode($product->colours);
+                $colourArrayOld = json_decode($product->colours);
+                $colourArray = json_decode($colourArrayOld->canada);
                 $coloursWithImage = [];
                  if($colourArray){
                     foreach ($colourArray as $col) {
@@ -171,9 +174,17 @@ public function __construct()
   */
     public function getSingleProduct(Request $request,$id)
     {
-       $data = AllProduct::singleproductModal($id);
 
-       
+       $country = isset($request->country)?$request->country:NULL;
+       if(!$country){
+        return response()->json([
+            'status'=>400,
+            'error'=>"please select the country",
+        ],400);
+
+       }
+       $data = AllProduct::singleproductModal($id,$country);
+
        $dimension = $data->original["product_data"]->product_dimensions;
          preg_match_all('/\b(?:S|M|L|XL|2XL)\b/', $dimension, $matches);
          $sizes = $matches[0];
@@ -240,7 +251,8 @@ public function __construct()
         } else {
             // Fetch color images for each product
             foreach ($data as $product) {
-                $colourArray = json_decode($product->colours);
+                $colourArrayOld = json_decode($product->colours);
+                $colourArray = json_decode($colourArrayOld->canada);
                 $coloursWithImage = [];
     
                 foreach ($colourArray as $col) {

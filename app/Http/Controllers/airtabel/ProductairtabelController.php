@@ -42,13 +42,11 @@ class ProductairtabelController extends Controller
                     $fields = $data->fields;
                     $existingProduct = Test::where('id_products_airtable', $data->id)->first();
                     if (!$existingProduct) {   
+                        $colorArray = [
+                            "canada" => isset($fields->{'T - Colours For Website CA'}) ? json_encode($fields->{'T - Colours For Website CA'}) : null,
+                            "us" => isset($fields->{'T - Colours For Website US'}) ? json_encode($fields->{'T - Colours For Website US'}) : null
+                        ];
                         
-                    /*     if( isset($fields->{'T - Product Tags For B Corp Reporting'})){
-                           return  $fields->{'T - Product Tags For B Corp Reporting'};
-
-                        }else{
-                            return "no";
-                        } */
                         $product = new Test([
                             'id_products_airtable' => $data->id,
                            // 'link_to_images_ca' => isset($fields->{'Link To Images CA'}) ? $fields->{'Link To Images CA'} : null,
@@ -60,7 +58,7 @@ class ProductairtabelController extends Controller
                             'emoji_ratings' => isset($fields->{'Emoji Ratings'}) ? json_encode($fields->{'Emoji Ratings'}) : null,
                             'certBy'=> isset($fields->{'T - Product Tags For B Corp Reporting'}) ? json_encode($fields->{'T - Product Tags For B Corp Reporting'}) : null, 
                             'product_title' => isset($fields->{'Product Title'}) ? $fields->{'Product Title'} : null,
-                             'colours' => isset($fields->{'T - Colours For Website'}) ? json_encode($fields->{'T - Colours For Website'}): null,
+                             'colours' => isset($colorArray ) ? json_encode($colorArray): null,
                             'colors_option_1_variants' => isset($fields->{'Colors (Option 1 Variants)'}) ? $fields->{'Colors (Option 1 Variants)'} : null,
                             'column_3_letter' => isset($fields->{'Column 3 - Letter'}) ? $fields->{'Column 3 - Letter'} : null,
                             'supplier_sku_ca' => isset($fields->{'Supplier SKU CA'}) ? $fields->{'Supplier SKU CA'} : null,
@@ -86,6 +84,7 @@ class ProductairtabelController extends Controller
                              'gender' => isset($fields->{'T - Apparel Gender'}) ? ($fields->{'T - Apparel Gender'}) : null,
                             'country_origin' => isset($fields->{'Country of Product Origin (Manufactured In)'}) ? json_encode($fields->{'Country of Product Origin (Manufactured In)'}) : null,
 
+                            
                             'column_1_qty' => isset($fields->{'Column 1 - QTY'}) ? $fields->{'Column 1 - QTY'} : null,
                             'column_2_qty' => isset($fields->{'Column 2 - QTY'}) ? $fields->{'Column 2 - QTY'} : null,
                             'column_3_qty' => isset($fields->{'Column 3 - QTY'}) ? $fields->{'Column 3 - QTY'} : null,
