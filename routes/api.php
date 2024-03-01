@@ -90,6 +90,10 @@ Route::group(['prefix' => 'sadm'], function () {
         Route::get('cart/{id}',[UserBackendController::class,'getCart'])->name('user_cart_inforamtion');
         Route::post('cart/update',[UserBackendController::class,'createCart'])->name('update_user_cart_inforamtion');
         Route::put('cart/create/address',[UserBackendController::class,'createCartAddress'])->name('update_user_cart_address');
+        Route::put('cart/create/address',[UserBackendController::class,'createCartAddress'])->name('update_user_cart_address');
+        Route::post('bulkestimate/{user_id}',[UserBackendController::class,'createBulkestimate'])->name('create_bulk_estimate');
+
+
 
        
     //});

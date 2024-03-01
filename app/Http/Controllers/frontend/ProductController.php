@@ -23,9 +23,9 @@ public $AIR_TABLE_BASE ;
 
 public function __construct()
 {
-    header('Access-Control-Allow-Origin: *');
+    /* header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: *');
-    header('Access-Control-Allow-Headers: *');
+    header('Access-Control-Allow-Headers: *'); */
     $this->AIR_TABLE_KEY = Config::get('myconfig.airtabel.airtabel_key');
     $this->AIR_TABLE_BASE = Config::get('myconfig.airtabel.airtabel_base');
 }

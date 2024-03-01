@@ -14,9 +14,21 @@ use Illuminate\Validation\ValidationException;
 
 
 
-
 class UserBackendController extends Controller
 {
+
+
+/*     public function __construct()
+{
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization');
+    header('credentials: Content-Type, true');
+   
+   
+} */
+
     public function getCart(Request $request){
         // Authenticate the user using Sanctum
        /*  $user = Auth::guard('sanctum')->user(); */
@@ -178,6 +190,17 @@ class UserBackendController extends Controller
 
     public function getAddress(Request $request ){
 
+    }
+
+    public function createBulkestimate(Request $request){
+
+        //$response->header('Access-Control-Allow-Origin', '*');
+        //$response->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+       // $response->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+          $re = $request->all();
+
+          print_r($re);
+     
     }
 
 }

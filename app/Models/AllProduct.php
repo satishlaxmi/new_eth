@@ -90,6 +90,7 @@ class AllProduct extends Model
         'column_5_retail_price_cad',
         'column_5_qty',
         'column_1_qty',
+        'column_0_qty',
         'collection_tags_from_product_type_specific',
         'column_1_retail_price_usd',
         'public_or_internal_availability',
